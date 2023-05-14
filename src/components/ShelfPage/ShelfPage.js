@@ -6,7 +6,9 @@ import { useDispatch } from 'react-redux';
 function ShelfPage() {
   const dispatch = useDispatch();
   const [shelfList, setShelfList] = useState([]);
-  const [newItem, setNewItem] = useState({ description: '', image_url: ''});
+  // const [newItem, setNewItem] = useState('');
+  const [description, setDescription] = useState('');
+  const [image_url, setImage] = useState(''); 
 
   useEffect(() => {
     fetchShelf();
@@ -21,35 +23,48 @@ function ShelfPage() {
     });
   }
 
-  const handleNewItem = (key, value) => {
-    console.log('new item added');
-    setNewItem({...newItem, [key]: value})
+  // const handleNewItem = (key, value) => {
+  //   console.log('new item added');
+  //   setNewItem({...newItem, [key]: value})
+  // }
+
+  const handleDescription = (event) => {
+    setDescription(event.target.value);
+    console.log(description);
   }
 
-  const addItem = (event) => {
-    axios.post('/api/shelf').then((response) => {
-      event.preventDefault();
-      dispatch({ type: 'SEND_NEW_ITEM', payload: newItem });
-      setNewItem({ description: '', image_url: ''});
-    })
+  const hanldeImageUrl = (event) => {
+    setImage(event.target.value);
+    console.log(image_url);
+  }
+
+  const addItem = () => {
+    // event.preventDefault();
+    axios.post('/api/shelf', {
+      description: description,
+      image_url: image_url,
+    }).then((response) => {
+      // dispatch({ type: 'SEND_NEW_ITEM', payload: newItem });
+      // setNewItem({ description: '', image_url: ''});
+    });
   }
 
   return (
     <div className="container">
       <h2>Add Item</h2>
-      <pre>{JSON.stringify(newItem)}</pre>
+      {/* <pre>{JSON.stringify()}</pre> */}
       <form onSubmit={addItem}>
         <input
             type='text'
-            value={newItem.description}
+            value={description}
             placeholder='Description'
-            onChange={(event) => handleNewItem('description', event.target.value)}
+            onChange={handleDescription}
         />
         <input
             type='text'
-            value={newItem.image_url}
+            value={image_url}
             placeholder='Image URL'
-            onChange={(event) => handleNewItem('image_url', event.target.value)}
+            onChange={hanldeImageUrl}
         />
         <input type='submit' value='Add New Item' />
       </form>
@@ -68,7 +83,7 @@ function ShelfPage() {
                         <br />
                         <div className="desc">{item.description}</div>
                         <div style={{textAlign: 'center', padding: '5px'}}>
-                          <button style={{cursor: 'pointer'}}>Delete</button>
+                        <button style={{cursor: 'pointer'}}>Delete</button>
                         </div>
                     </div>
                  </div>
